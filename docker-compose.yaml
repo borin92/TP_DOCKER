@@ -23,21 +23,25 @@ services:
       # Your user password
       MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
   
-  # Symfony service 
-  symfony:
+  # Php-apache service (version 7.4)
+  php_apache:
     depends_on:
       - db
-    image: wordpress:latest
+    # We will using the official php-apache version 7.4 images
+    image: php:7.4-apache
+    # We need a volume in our project to store the php-apache files
     volumes:
-      - ./wordpress_data:/var/www/html
+      - ./src:/var/www/html/
     ports:
-      - "8000:80"
+      - "8081:81"
+    # The project will always restart when crashing
     restart: always
     environment:
       WORDPRESS_DB_HOST: db:3306
       WORDPRESS_DB_USER: "${MYSQL_USER}"
       WORDPRESS_DB_PASSWORD: "${MYSQL_PASSWORD}"
       WORDPRESS_DB_NAME: "${MYSQL_DATABASE}"
+
   # Composer service
   composer:
     # working directory 
@@ -46,7 +50,20 @@ services:
     image: composer:2
     # We will map the 8082 port of container with 80 port on actual machine
     ports:
-      - "8082:80"
+      - "8083:83"
+
+  # Phpmyadmin service (version 5.1.1)
+  phpmyadmin:
+    
+  # We will using the official phpmyadmin version 5.1.1 images
+    image: phpmyadmin:5.1.1-apache
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+    ports:
+      - "8082:82"
     # We will use the same volume as Symfony service
     volume: ./src:/app
 
