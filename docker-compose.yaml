@@ -7,6 +7,7 @@ services:
   db:
     # We will using the official mysql version 5.7 images
     image: mysql:5.7
+    container_name: db
     # We need a volume in our project to store the database
     volumes:
       - ./db_data:/var/lib/mysql
@@ -22,6 +23,8 @@ services:
       MYSQL_USER: "${MYSQL_USER}"
       # Your user password
       MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+    networks:
+      - dev
   
   # Php-apache service (version 7.4)
 
@@ -36,6 +39,8 @@ services:
     restart: always
     networks:
       - dev
+    depends_on:
+      - db
   # Composer service
   
 
@@ -53,6 +58,8 @@ services:
     # We will use the same volume as Symfony service
     volumes: 
       - ./phpmyadmin_data:/app
+    networks:
+      - dev
 networks:
   dev:
 
