@@ -1,5 +1,5 @@
 # Version of the docker compose file
-version: "1.0"
+version: "3.3"
 
 # Service list
 services:
@@ -33,7 +33,7 @@ services:
     volumes:
       - ./src:/var/www/html/
     ports:
-      - "8081:81"
+      - "8000:80"
     # The project will always restart when crashing
     restart: always
     environment:
@@ -45,28 +45,29 @@ services:
   # Composer service
   composer:
     # working directory 
-    working_dir: ./src
+    working_dir: /src/
     # Official image of composer in version 2
     image: composer:2
     # We will map the 8082 port of container with 80 port on actual machine
     ports:
-      - "8083:83"
+      - "8081:80"
 
   # Phpmyadmin service (version 5.1.1)
   phpmyadmin:
-    
   # We will using the official phpmyadmin version 5.1.1 images
-    image: phpmyadmin:5.1.1-apache
+    image: phpmyadmin:5.1.1
     environment:
       PMA_HOST: db
       PMA_PORT: 3306
       PMA_ARBITRARY: 1
       MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
     ports:
-      - "8082:82"
+      - "8080:80"
     # We will use the same volume as Symfony service
-    volume: ./src:/app
+    volumes: 
+      - ./phpmyadmin_data:/app
 
 volumes:
   db_data:
-  wordpress_data:
+  phpmyadmin_data:
+  src:
