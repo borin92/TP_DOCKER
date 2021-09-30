@@ -38,16 +38,18 @@ services:
       WORDPRESS_DB_USER: "${MYSQL_USER}"
       WORDPRESS_DB_PASSWORD: "${MYSQL_PASSWORD}"
       WORDPRESS_DB_NAME: "${MYSQL_DATABASE}"
-
+  # Composer service
   composer:
-    image: phpmyadmin:latest
-    environment:
-      PMA_HOST: db
-      PMA_PORT: 3306
-      PMA_ARBITRARY: 1
-      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+    # working directory 
+    working_dir: ./src
+    # Official image of composer in version 2
+    image: composer:2
+    # We will map the 8082 port of container with 80 port on actual machine
     ports:
-      - "8080:80"
+      - "8082:80"
+    # We will use the same volume as Symfony service
+    volume: ./src:/app
+
 volumes:
   db_data:
   wordpress_data:
