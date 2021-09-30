@@ -1,1 +1,4 @@
 .env
+/phpmyadmin_data/
+/src/
+/db_data/
