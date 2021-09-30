@@ -46,11 +46,14 @@ services:
   composer:
     # working directory 
     working_dir: /src/
+    volumes:
+      - ./src:/src
     # Official image of composer in version 2
     image: composer:2
     # We will map the 8082 port of container with 80 port on actual machine
     ports:
       - "8081:80"
+    command: "composer install"
 
   # Phpmyadmin service (version 5.1.1)
   phpmyadmin:
