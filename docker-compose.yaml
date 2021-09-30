@@ -24,38 +24,20 @@ services:
       MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
   
   # Php-apache service (version 7.4)
-  php_apache:
-    depends_on:
-      - db
-    # We will using the official php-apache version 7.4 images
-    image: php:7.4-apache
-    # We need a volume in our project to store the php-apache files
-    volumes:
-      - ./src:/var/www/html/
-    ports:
-      - "8000:80"
-    # The project will always restart when crashing
-    restart: always
-    environment:
-      WORDPRESS_DB_HOST: db:3306
-      WORDPRESS_DB_USER: "${MYSQL_USER}"
-      WORDPRESS_DB_PASSWORD: "${MYSQL_PASSWORD}"
-      WORDPRESS_DB_NAME: "${MYSQL_DATABASE}"
 
-  # Composer service
-  composer:
-    depends_on:
-      - php_apache
-    # working directory 
-    working_dir: /src/my_crud_project
-    volumes:
-      - ./src/my_crud_project:/src/my_crud_project
-    # Official image of composer in version 2
-    image: composer:2
-    # We will map the 8082 port of container with 80 port on actual machine
+  www:
+    build: src/
+    container_name: www_docker_symfony
     ports:
-      - "8081:80"
-    command: "composer install"
+      - "8741:80"
+    volumes:
+      - ./src/vhosts:/etc/apache2/sites-enabled
+      - ./:/var/www
+    restart: always
+    networks:
+      - dev
+  # Composer service
+  
 
   # Phpmyadmin service (version 5.1.1)
   phpmyadmin:
@@ -71,6 +53,8 @@ services:
     # We will use the same volume as Symfony service
     volumes: 
       - ./phpmyadmin_data:/app
+networks:
+  dev:
 
 volumes:
   db_data:
