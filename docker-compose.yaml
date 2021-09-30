@@ -1,0 +1,53 @@
+# Version of the docker compose file
+version: "1.0"
+
+# Service list
+services:
+  # Database service
+  db:
+    # We will using the official mysql version 5.7 images
+    image: mysql:5.7
+    # We need a volume in our project to store the database
+    volumes:
+      - ./db_data:/var/lib/mysql
+    # The project will always restart when crashing
+    restart: always
+    # Our environment variable, make sure to fill the .env file with your creditential
+    environment:
+      # Your root password
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      # Your database name
+      MYSQL_DATABASE: "${MYSQL_DATABASE}"
+      # Your database user
+      MYSQL_USER: "${MYSQL_USER}"
+      # Your user password
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+  
+  # Symfony service 
+  symfony:
+    depends_on:
+      - db
+    image: wordpress:latest
+    volumes:
+      - ./wordpress_data:/var/www/html
+    ports:
+      - "8000:80"
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: "${MYSQL_USER}"
+      WORDPRESS_DB_PASSWORD: "${MYSQL_PASSWORD}"
+      WORDPRESS_DB_NAME: "${MYSQL_DATABASE}"
+
+  composer:
+    image: phpmyadmin:latest
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+    ports:
+      - "8080:80"
+volumes:
+  db_data:
+  wordpress_data:
