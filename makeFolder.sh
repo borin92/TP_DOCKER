@@ -1,6 +1,5 @@
 mkdir -p \
 "db_data" \
-"phpmyadmin_data" \
-"src" 
+"phpmyadmin_data"
 
 docker-compose up
