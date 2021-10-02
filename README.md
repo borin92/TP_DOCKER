@@ -15,7 +15,7 @@ You can clone the project into a directory
 `git clone https://github.com/borin92/TP_DOCKER.git
 cd TP_DOCKER`
 
-We will need fiew folder for the project just run the .sh file like this  `makeFolder.sh`
+We will need fiew folder for the project just run the .sh file like this  `./makeFolder.sh`
 
 
 # .env files
