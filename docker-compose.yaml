@@ -29,16 +29,23 @@ services:
   # Php-apache service (version 7.4)
 
   www:
+    # build will call a dockerFile 
     build: src/
-    container_name: www_docker_symfony
+    # we want a custom container name
+    container_name: www_docker_symfony:
+    # will running on ports 8741:80
     ports:
       - "8741:80"
+    # path to the volumes
     volumes:
       - ./src/vhosts:/etc/apache2/sites-enabled
       - ./:/var/www
+    # we will always restart this service
     restart: always
+    # the network shared with the other
     networks:
       - dev
+    # the dependancie
     depends_on:
       - db
   # Composer service
