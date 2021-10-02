@@ -15,6 +15,8 @@ You can clone the project into a directory
 `git clone https://github.com/borin92/TP_DOCKER.git
 cd TP_DOCKER`
 
+We will need fiew folder for the project just run the .sh file like this  `makeFolder.sh`
+
 
 # .env files
 
@@ -26,7 +28,7 @@ touch .env.local
 then you need to add this line :  DATABASE_URL="mysql://MYSQL_USER:MYSQL_PASSWORD@db:3306/MYSQL_DATABASE?serverVersion=5.7"
 
 this will be the connection string to MY_SQL. In the string you can see "MYSQL_USER/MYSQL_PASSWORD..."
-For this you need to fill up the .env.sample file at the root of the repo and make them match with the element in the connection string. If you on a local machine you can put what ever you want the important thing is that they need to match your connection string.
+For this you need to fill up the .env.sample file at the root of the repo and make them match with the element in the connection string. If you on a local machine you can put what ever you want the important thing is that they need to match your connection string. Dont forget here we talk about the value for exemple in the .env file you have MYSQL_USER = foo you will put **foo** in the connection string as MYSQL_USER.
 
 
 # launch the container
