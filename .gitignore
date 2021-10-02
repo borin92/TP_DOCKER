@@ -1,0 +1,24 @@
+/db_data/
+/phpmyadmin_data/
+
+
+###> symfony/framework-bundle ###
+/src/project/.env.local
+/src/project/.env.local.php
+/src/project/.env.*.local
+/src/project/config/secrets/prod/prod.decrypt.private.php
+/src/project/public/bundles/
+/src/project/var/
+/src/project/vendor
+###< symfony/framework-bundle ###
+
+###> symfony/phpunit-bridge ###
+/src/project/.phpunit.result.cache
+/src/project/phpunit.xml
+###< symfony/phpunit-bridge ###
+
+###> phpunit/phpunit ###
+/src/project/phpunit.xml
+/src/project/.phpunit.result.cache
+###< phpunit/phpunit ###
+

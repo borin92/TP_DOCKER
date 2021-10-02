@@ -1,0 +1,88 @@
+# Version of the docker compose file
+version: "3.3"
+
+# Service list
+services:
+  # Database service
+  db:
+    # We will using the official mysql version 5.7 images
+    image: mysql:5.7
+    container_name: db
+    # We need a volume in our project to store the database
+    volumes:
+      - ./db_data:/var/lib/mysql
+    # The project will always restart when crashing
+    restart: always
+    # Our environment variable, make sure to fill the .env file with your creditential
+    environment:
+      # Your root password
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      # Your database name
+      MYSQL_DATABASE: "${MYSQL_DATABASE}"
+      # Your database user
+      MYSQL_USER: "${MYSQL_USER}"
+      # Your user password
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+#Instead of just using the default app network, we use our own networks (dev)
+#We use it here to connect the different services in the same network
+    networks:
+      - dev
+  
+  # The service from the Dockerfile in the src folder
+  www:
+    # build will call a dockerFile 
+    build: src/
+    # we want a custom container name
+    container_name: www_docker_symfony
+    # will running on ports 8741:80
+    ports:
+      - "8741:80"
+    # path to the volumes
+    volumes:
+      - ./src/vhosts:/etc/apache2/sites-enabled
+      - ./:/var/www
+    # we will always restart this service
+    restart: always
+    # the custom network shared with the other service
+    networks:
+      - dev
+    # the service dependencies
+    depends_on:
+      - db
+  
+
+  # Phpmyadmin service (version 5.1.1)
+  phpmyadmin:
+  # We will using the official phpmyadmin version 5.1.1 images
+    image: phpmyadmin:5.1.1
+    #We declare the environment of phpmyadmin
+    environment:
+      #We define the address/host name of the MySQL server (here the db service)
+      PMA_HOST: db
+      #We specify the port used by the host
+      PMA_PORT: 3306
+      # when set to 1 connection to the arbitrary server will be allowed.
+      PMA_ARBITRARY: 1
+      #We specify the root password of mysql
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+    # will running on ports 8080:80
+    ports:
+      - "8080:80"
+    # We will use the same volume as Symfony service
+    volumes: 
+      - ./phpmyadmin_data:/app
+   # The custom network shared with the other service
+    networks:
+      - dev
+
+
+
+#List of networks that we use
+networks:
+  dev:
+
+#List of volumes that we use for each service
+volumes:
+  db_data:
+  phpmyadmin_data:
+  src:
