@@ -23,16 +23,17 @@ services:
       MYSQL_USER: "${MYSQL_USER}"
       # Your user password
       MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+#Instead of just using the default app network, we use our own networks (dev)
+#We use it here to connect the different services in the same network
     networks:
       - dev
   
-  # Php-apache service (version 7.4)
-
+  # The service from the Dockerfile in the src folder
   www:
     # build will call a dockerFile 
     build: src/
     # we want a custom container name
-    container_name: www_docker_symfony:
+    container_name: www_docker_symfony
     # will running on ports 8741:80
     ports:
       - "8741:80"
@@ -42,34 +43,45 @@ services:
       - ./:/var/www
     # we will always restart this service
     restart: always
-    # the network shared with the other
+    # the custom network shared with the other service
     networks:
       - dev
-    # the dependancie
+    # the service dependencies
     depends_on:
       - db
-  # Composer service
   
 
   # Phpmyadmin service (version 5.1.1)
   phpmyadmin:
   # We will using the official phpmyadmin version 5.1.1 images
     image: phpmyadmin:5.1.1
+    #We declare the environment of phpmyadmin
     environment:
+      #We define the address/host name of the MySQL server (here the db service)
       PMA_HOST: db
+      #We specify the port used by the host
       PMA_PORT: 3306
+      # when set to 1 connection to the arbitrary server will be allowed.
       PMA_ARBITRARY: 1
+      #We specify the root password of mysql
       MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+    # will running on ports 8080:80
     ports:
       - "8080:80"
     # We will use the same volume as Symfony service
     volumes: 
       - ./phpmyadmin_data:/app
+   # The custom network shared with the other service
     networks:
       - dev
+
+
+
+#List of networks that we use
 networks:
   dev:
 
+#List of volumes that we use for each service
 volumes:
   db_data:
   phpmyadmin_data:
